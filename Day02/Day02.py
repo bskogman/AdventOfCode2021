@@ -25,3 +25,5 @@ for x in course:
     elif x[0] == 'u':
         aim -= int(x[-1])
 print("Answer for Pt 2: " + str(pos*dep))
+
+file.close()
