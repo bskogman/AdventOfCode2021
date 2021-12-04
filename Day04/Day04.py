@@ -65,6 +65,7 @@ def scoreboard(bd:list[list[str]]):
 
 winning_num = 0
 winning_score = 0
+boardspt2 = boards.copy()
 for called_num in draw:
     for ind in range(0,len(boards)):
         new_bd = markdraw(called_num,boards[ind])
@@ -80,6 +81,21 @@ for called_num in draw:
 
 print("Answer for Pt 1: " + str(winning_num*winning_score))
 
+indexes = []
+for ind in range(0,len(boardspt2)):
+    for num_ind in range(0,len(draw)):
+        new_bd = markdraw(draw[num_ind],boardspt2[ind])
+        if checkbingo(new_bd):
+            indexes.append((num_ind,ind))
+            boardspt2.pop(ind)
+            boardspt2.insert(ind,new_bd)
+            break
+        else: 
+            boardspt2.pop(ind)
+            boardspt2.insert(ind,new_bd)
 
+indexes.sort(reverse=True)
+winning_num_pt2 = int(draw[indexes[0][0]])
+winning_score_pt2 = scoreboard(boardspt2[indexes[0][1]])
 
-#print(boards)
+print("Answer for Pt 2: " + str(winning_num_pt2*winning_score_pt2))
