@@ -5,20 +5,23 @@ draw = file[0].split(',')
 boards = []
 filelen = len(file)
 
-print(file[2:7])
-def boardmaker(string_board):
+def boardmaker(string_board:list[str]):
     newboard = []
     for line in string_board:
         nums = line.split(' ')
-        print(nums)
+        newnums = nums.copy()
+        while(len(newnums) > 5):
+            newnums.remove('')
+        nums = newnums.copy()
         newboard.append(nums)
-    print(newboard)
     return newboard
 
-for x in range(1,2):
+for x in range(1,filelen):
     if file[x] == '':
-        print('found a blank at index ' + str(x))
-        
+        #print('found a blank at index ' + str(x))
         boards.append(boardmaker(file[x+1:x+6]))
 
-print(boards)
+
+
+
+#print(boards)
