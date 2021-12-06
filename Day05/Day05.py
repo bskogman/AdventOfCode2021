@@ -2,7 +2,6 @@
 with open('Day05\\input.txt') as f:
     file = f.read().split('\n')
 
-# file = file[40:50]
 # parse coordinates
 line_ends = []
 for line in file:
@@ -26,6 +25,7 @@ for pts in line_ends:
         if int(pt[1]) > bigy:
             bigy = int(pt[1])
 
+# make empty grids
 empty_row = []
 for x in range(0,bigx+1):
     empty_row.append(0)
@@ -63,3 +63,43 @@ def findoverlaps(filled_grid):
 pt1overlaps = findoverlaps(gridpt1)
 print("Answer for Pt 1: " + str(pt1overlaps))
 
+# fill grid lines for pt 2
+for ends in line_ends:
+    if (ends[0][0] == ends[1][0]):
+        # draw horizontal line on grid
+        x1 = int(ends[0][0])
+        x2 = int(ends[1][0])
+        y1 = min(int(ends[0][1]),int(ends[1][1]))
+        y2 = max(int(ends[0][1]),int(ends[1][1]))
+        for ypts in range(y1,y2+1):
+            gridpt2[ypts][x1] += 1
+    elif (ends[0][1] == ends[1][1]):
+        # draw vertical line on grid
+        y1 = int(ends[0][1])
+        y2 = int(ends[1][1])
+        x1 = min(int(ends[0][0]),int(ends[1][0]))
+        x2 = max(int(ends[0][0]),int(ends[1][0]))
+        for xpts in range(x1,x2+1):
+            gridpt2[y1][xpts] += 1
+    else:
+        # draw diagonal lines
+        x1 = int(ends[0][0])
+        y1 = int(ends[0][1])
+        x2 = int(ends[1][0])
+        y2 = int(ends[1][1])
+        offset = abs(x1-x2)
+        if (x1 < x2) & (y1 < y2):
+            for os in range(0,offset+1):
+                gridpt2[y1+os][x1+os] += 1
+        elif (x1 < x2) & (y1 > y2):
+            for os in range(0,offset+1):
+                gridpt2[y1-os][x1+os] += 1
+        elif (x1 > x2) & (y1 > y2):
+            for os in range(0,offset+1):
+                gridpt2[y1-os][x1-os] += 1
+        else: 
+            for os in range(0,offset+1):
+                gridpt2[y1+os][x1-os] += 1
+        
+pt2overlaps = findoverlaps(gridpt2)
+print("Answer for Pt 2: " + str(pt2overlaps))
