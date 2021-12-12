@@ -1,5 +1,5 @@
-with open('Day11\\test.txt') as f:
-# with open('Day11\\input.txt') as f:
+# with open('Day11\\test.txt') as f:
+with open('Day11\\input.txt') as f:
     file = f.read().split('\n')
 
 flash_levels = []
@@ -9,28 +9,77 @@ for line in file:
         new_line.append(int(c))
     flash_levels.append(new_line)
 
-print(flash_levels)
+def has_flashing_octo(octos:list[list[int]]):
+    big_num = 0
+    for i in range(0,len(octos)):
+        for j in range(0,len(octos[i])):
+            if octos[i][j] > big_num:
+                big_num = octos[i][j]
+    if big_num > 9:
+        return True
+    else: return False
 
-def make_flash(octos:list[list[int]],y_val:int,x_val:int):
-    new_octos = []
-    return new_octos
+def non_nine_adj(coords:list[int],octos:list[list[int]]):
+    adj = []
+    x = coords[0]
+    y = coords[1]
+    if y-1 != -1:
+        new_element = octos[y-1][x]
+        if (new_element <= 9) and (octos[y][x] < new_element):
+            adj.append([x,y-1])
+    if y+1 < len(octos):
+        new_element = octos[y+1][x]
+        if (new_element <= 9) and (octos[y][x] < new_element):
+            adj.append([x,y+1])
+    if x-1 != -1:
+        new_element = octos[y][x-1]
+        if (new_element <= 9) and (octos[y][x] < new_element):
+            adj.append([x-1,y])
+    if x+1 < len(octos[y]):
+        new_element = octos[y][x+1]
+        if (new_element <= 9) and (octos[y][x] < new_element):
+            adj.append([x+1,y])
+    return adj
 
 def simulate_flashes(octos:list[list[int]],num_steps:int):
-    total_flashes = 0
+    flash_list = []
     for x in range(0,num_steps):
+        octos_to_flash = [] # didn't need for pt 1, but I still like the idea of it
         for i in range(0,len(octos)):
             for j in range(0,len(octos[i])):
                 octos[i][j] += 1
-        print(octos[0])
+                if octos[i][j] > 9:
+                    octos_to_flash.append([j,i])
+        while has_flashing_octo(octos) == True:
+            for i in range(0,len(octos)):
+                for j in range(0,len(octos[i])):
+                    if octos[i][j] > 9:
+                        if i-1 != -1:
+                            octos[i-1][j] += 1
+                            if j-1 != -1:
+                                octos[i-1][j-1] += 1
+                            if j+1 < len(octos[i]): 
+                                octos[i-1][j+1] += 1   
+                        if i+1 < len(octos):
+                            octos[i+1][j] += 1
+                            if j-1 != -1:
+                                octos[i+1][j-1] += 1
+                            if j+1 < len(octos[i]): 
+                                octos[i+1][j+1] += 1   
+                        if j-1 != -1:
+                            octos[i][j-1] += 1
+                        if j+1 < len(octos[i]):
+                            octos[i][j+1] += 1
+                        octos[i][j] = -1000
+        total_flashes = 0
         for i in range(0,len(octos)):
             for j in range(0,len(octos[i])):
-                if octos[i][j] > 9:
-                    # make surrounding octos flash
-                    # maybe do a while loop if a line has a 9?
-                    # remember that an octo can only flash once during a step - keep list of flashed points??
+                if octos[i][j] < 0:
+                    total_flashes += 1
                     octos[i][j] = 0
-        print(octos[0])
+        flash_list.append(total_flashes)
+    return sum(flash_list)
 
-    return total_flashes
+print("Answer for Pt 1: ",simulate_flashes(flash_levels,100))
 
-simulate_flashes(flash_levels,10)
+
