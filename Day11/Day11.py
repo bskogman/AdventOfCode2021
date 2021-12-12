@@ -2,12 +2,14 @@
 with open('Day11\\input.txt') as f:
     file = f.read().split('\n')
 
-flash_levels = []
-for line in file:
-    new_line = []
-    for c in line:
-        new_line.append(int(c))
-    flash_levels.append(new_line)
+def data_reset(lvls:list[list[str]]):
+    flashers = []
+    for line in file:
+        new_line = []
+        for c in line:
+            new_line.append(int(c))
+        flashers.append(new_line)
+    return flashers
 
 def has_flashing_octo(octos:list[list[int]]):
     big_num = 0
@@ -78,8 +80,19 @@ def simulate_flashes(octos:list[list[int]],num_steps:int):
                     total_flashes += 1
                     octos[i][j] = 0
         flash_list.append(total_flashes)
-    return sum(flash_list)
+    return flash_list
 
-print("Answer for Pt 1: ",simulate_flashes(flash_levels,100))
+flash_levels = data_reset(file)
+print("Answer for Pt 1: ",sum(simulate_flashes(flash_levels,100)))
 
+num_loops = 1
+pt2_answered = False
+while pt2_answered == False:
+    num_loops += 1
+    flash_levels = data_reset(file)
+    flashes = simulate_flashes(flash_levels,num_loops)
+    if flashes[-1] == 100:
+        pt2_answered = True
 
+# tell them to bring me my money
+print("Answer for Pt 2: ",num_loops)
